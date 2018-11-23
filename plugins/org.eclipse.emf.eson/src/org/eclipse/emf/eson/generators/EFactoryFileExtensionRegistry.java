@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -44,16 +45,19 @@ public class EFactoryFileExtensionRegistry {
 
 	private Set<String> initializeRegistry() {
 		Set<String> _associateFileExtensions = new HashSet<String>();
-		IConfigurationElement[] config = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(
-						"org.eclipse.emf.eson.file");
+		IExtensionRegistry extReg = Platform.getExtensionRegistry();
+		if (extReg!=null) {
+			IConfigurationElement[] config = Platform.getExtensionRegistry()
+					.getConfigurationElementsFor("org.eclipse.emf.eson.file");
 
-		for (IConfigurationElement e : config) {
-			String extensions = e.getAttribute("extensions");
-			String extensions_withoutspace = extensions.replaceAll("\\s", "");
-			_associateFileExtensions.addAll(Arrays.asList(extensions_withoutspace.split(",")));
+			for (IConfigurationElement e : config) {
+				String extensions = e.getAttribute("extensions");
+				String extensions_withoutspace = extensions.replaceAll("\\s",
+						"");
+				_associateFileExtensions.addAll(
+						Arrays.asList(extensions_withoutspace.split(",")));
+			}
 		}
-
 		return Collections.unmodifiableSet(_associateFileExtensions);
 	}
 
